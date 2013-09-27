@@ -6,6 +6,9 @@ Demonstrate the basic setup of .NET DLL (managed assembly) project to be used wi
 This is based on an Unity Forum article "How to build and debug external DLLs" http://forum.unity3d.com/threads/161685-How-to-build-and-debug-external-DLLs
 
 
+This is my blog entry with the similar contents.
+http://yoshi-game-dev.blogspot.com/2013/09/unitydllexample-you-can-find-project-in.html
+
 Build a DLL
 
 1) Create an empty Visual Studio solution (.sln) or use an existing solution.
