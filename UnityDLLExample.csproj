@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Common Properties -->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{11CEF2B8-1D38-44E3-A5C5-4EA39414BA5F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>UnityDLLExample</RootNamespace>
+    <AssemblyName>UnityDLLExample</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <!-- Look up Unity install folder, and set the ReferencePath for locating managed assembly references. -->
+    <UnityInstallFolder>$([System.IO.Path]::GetDirectoryName($(registry:HKEY_CURRENT_USER\Software\Unity Technologies\Unity Editor 3.x\Location)))</UnityInstallFolder>
+    <ReferencePath>$(UnityInstallFolder)\Data\Managed</ReferencePath>
+    <MonoMdbGenerator>$(UnityInstallFolder)\Data\Mono\lib\mono\2.0\pdb2mdb.exe</MonoMdbGenerator>
+  </PropertyGroup>
+  <!-- Debug Properties -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Assets\Plugins</OutputPath>
+    <DefineConstants>DEBUG;UNITY_3_5</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <!-- Release Properties -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Assets\Plugins</OutputPath>
+    <DefineConstants>UNITY_3_5</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <!-- Microsoft standard stuff. -->
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- Find all source -->
+  <ItemGroup>
+    <Compile Include="Scripts\**\*.cs" />
+  </ItemGroup>
+  <!-- References -->
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="UnityEngine">
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\Plugins\" />
+    <Folder Include="Scripts\" />
+  </ItemGroup>
+  <!-- Use AfterUnityBuild from Blackbird.CSharp.targets. -->
+  <Target Name="AfterBuild">
+    <CallTarget Targets="GenerateMonoSymbols" Condition=" Exists('$(OutputPath)\$(AssemblyName).pdb') " />
+  </Target>
+  <Target Name="GenerateMonoSymbols">
+    <Message Text="$(ProjectName) -&gt; $(TargetPath).mdb" Importance="High" />
+    <Exec Command="&quot;$(MonoMdbGenerator)&quot; $(AssemblyName).dll" WorkingDirectory="$(MSBuildProjectDirectory)\$(OutputPath)" />
+  </Target>
+</Project>
